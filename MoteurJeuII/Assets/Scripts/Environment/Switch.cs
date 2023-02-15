@@ -25,7 +25,8 @@ public class Switch : MonoBehaviour
         if (switchOn == true)
         {
             platform.position = Vector3.Lerp(pointA.position, pointB.position, Mathf.PingPong(Time.time * speedPlatform, 1));
-            animatorSwitch.Play("SwitchOn");
+            //animatorSwitch.Play("SwitchOn");
+            animatorSwitch.SetTrigger("SwichtOn");
         }
         
     }

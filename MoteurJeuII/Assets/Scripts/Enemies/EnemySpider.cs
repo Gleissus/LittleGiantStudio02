@@ -13,6 +13,8 @@ public class EnemySpider : Enemies
 
     private Transform player;
     private Vector3 startingPosition;
+    private Animator spiderAnimator;
+
     private bool isAttacking = false;
 
     void Start()
@@ -24,6 +26,8 @@ public class EnemySpider : Enemies
         player = GameObject.FindGameObjectWithTag("Player").transform;
         // Save starting position
         startingPosition = transform.position;
+
+        spiderAnimator = GetComponent<Animator>();
     }
 
     void Update()
@@ -62,9 +66,10 @@ public class EnemySpider : Enemies
         {
             Vector3 direction = player.position - transform.position;
             float distance = direction.magnitude;
+            spiderAnimator.SetBool("isWalking", true);
             if (distance < attackRange)
             {
-                // Attack player
+                Attack();
                 break;
             }
             transform.position = Vector3.MoveTowards(transform.position, player.position, attackSpeed * Time.deltaTime);
@@ -80,10 +85,16 @@ public class EnemySpider : Enemies
 
     void Attack()
     {
-        // code for the enemy to attack the player
-        // for example, the player's health can be reduced by a certain amount
-    }
+        spiderAnimator.SetTrigger("Attack");
 
+        /*PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(10);
+        }
+            */
+
+    }
 }
 
 

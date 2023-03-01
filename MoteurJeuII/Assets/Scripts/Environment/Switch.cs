@@ -36,7 +36,7 @@ public class Switch : MonoBehaviour
     // Check if the player enters the interaction range of the button
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("PlayerGhostBlue"))
         {
             Debug.Log("Player is in range");
             isInRange = true;
@@ -46,7 +46,7 @@ public class Switch : MonoBehaviour
     // Check if the player exits the interaction range of the button
     void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("PlayerGhostBlue"))
         {
             Debug.Log("Player is not in range");
             isInRange = false;

@@ -4,52 +4,50 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 20f;
+    [SerializeField] private Rigidbody _rb;
+    [SerializeField] private float _speed = 5;
+    [SerializeField] private float _turnSpeed = 360;
     [SerializeField] private Animator animator;
-    [SerializeField] private float rotationSpeed = 10f;
 
-    private bool isAttacking = false;
+    private Vector3 _input;
 
-    private Vector3 movement;
-    private Rigidbody playerRigidbody;
-
-
-
-    void Awake()
+    private void Update()
     {
-        playerRigidbody = GetComponent<Rigidbody>();
-    }
+        GatherInput();
+        Look();
 
-    void Update()
-    {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        Animate(_input.x, _input.z);
 
-        if (!isAttacking)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Move(horizontal, vertical);
-            Rotate(horizontal, vertical);
+            Application.Quit();
         }
-        
-        Animate(horizontal, vertical);
-        Attack();
     }
 
-    void Move(float h, float v)
+    private void FixedUpdate()
     {
-        movement.Set(h, 0f, v);
-        movement = movement.normalized * moveSpeed * Time.deltaTime;
-
-        playerRigidbody.MovePosition(transform.position + movement);
+        Move();
     }
 
-    void Rotate(float h, float v)
+    private void GatherInput()
     {
-        if (h != 0f || v != 0f)
-        {
-            Quaternion newRotation = Quaternion.LookRotation(movement);
-            playerRigidbody.MoveRotation(Quaternion.Slerp(playerRigidbody.rotation, newRotation, Time.deltaTime * rotationSpeed));
-        }
+        _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+    }
+
+    private void Look()
+    {
+        if (_input == Vector3.zero) return;
+
+        var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime);
+    }
+
+    private void Move()
+    {
+        Vector3 movement = _input.normalized * _speed * Time.deltaTime;
+        _rb.MovePosition(transform.position + movement);
+
+        //_rb.MovePosition(transform.position + transform.forward * _input.normalized.magnitude * _speed * Time.deltaTime);
     }
 
     void Animate(float h, float v)
@@ -57,19 +55,4 @@ public class PlayerController : MonoBehaviour
         bool walking = h != 0f || v != 0f;
         animator.SetBool("IsWalking", walking);
     }
-
-    void Attack()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            animator.SetTrigger("Attack");
-            isAttacking = true;
-        }
-
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack01") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f)
-        {
-            isAttacking = false;
-        }
-    }
-
 }

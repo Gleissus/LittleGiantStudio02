@@ -11,7 +11,7 @@ public class Camera : MonoBehaviour
 
     private void Start()
     {
-        offset = new Vector3(0f, 12f, -7f);
+        offset = new Vector3(0f, 15f, -7f);
         smoothTime = 0.20f;
     }
 

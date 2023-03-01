@@ -4,15 +4,35 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float attackRange = 2f;
+    public int damage = 10;
+    public LayerMask enemyLayer;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Attack();
+        }
+    }
+
+    void Attack()
+    {
+        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRange, enemyLayer);
+
+        foreach (Collider enemy in hitEnemies)
+        {
+            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage);
+            }
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

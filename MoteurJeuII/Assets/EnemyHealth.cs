@@ -24,6 +24,7 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        // Add death behavior here
         Destroy(gameObject);
     }
 }

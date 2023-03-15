@@ -6,13 +6,12 @@ public class EnemySpider : Enemies
 {
 
     [SerializeField] private float walkSpeed = 2f;
-    [SerializeField] private float attackSpeed = 4f;
+    [SerializeField] private float attackSpeed = 2f;
     [SerializeField] private float fieldOfView = 90f;
     [SerializeField] private float attackRange = 1f;
     [SerializeField] private float patrolRadius = 10f;
 
     private Transform player;
-    private Vector3 startingPosition;
     private Animator spiderAnimator;
 
     private bool isAttacking = false;
@@ -24,8 +23,6 @@ public class EnemySpider : Enemies
         lootDropChance = 0.2f;
         // Get reference to player's transform
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        // Save starting position
-        startingPosition = transform.position;
 
         spiderAnimator = GetComponent<Animator>();
     }
@@ -54,8 +51,6 @@ public class EnemySpider : Enemies
                     }
                 }
             }
-            // If player is not in field of view, randomly walk around
-            Walk();
         }
     }
 
@@ -73,14 +68,10 @@ public class EnemySpider : Enemies
                 break;
             }
             transform.position = Vector3.MoveTowards(transform.position, player.position, attackSpeed * Time.deltaTime);
+            transform.LookAt(player);
             yield return null;
         }
         isAttacking = false;
-    }
-
-    void Walk()
-    {
-        
     }
 
     void Attack()

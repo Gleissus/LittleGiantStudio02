@@ -12,19 +12,15 @@ public class EnemyHealth : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int amount)
     {
-        currentHealth -= damage;
+        currentHealth -= amount;
 
         if (currentHealth <= 0)
         {
-            Die();
+            Destroy(gameObject);
         }
     }
 
-    void Die()
-    {
-        // Add death behavior here
-        Destroy(gameObject);
-    }
+   
 }

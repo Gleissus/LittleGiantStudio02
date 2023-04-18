@@ -7,27 +7,40 @@ public class PlayerControllerGhostBlue : MonoBehaviour
 {
     [Header("Ghost Variables")]
     [SerializeField] private Rigidbody _rb;
-    [SerializeField] private float _speed = 5;
-    [SerializeField] private float _turnSpeed = 360;
+    [SerializeField] private float _speed = 20;
+    [SerializeField] private float _turnSpeed = 10;
     [SerializeField] private Animator animator;
     [Header("Target Variables")]
     [SerializeField] private GameObject Player;
     [SerializeField] private float maxDistance = 10f;
 
-    private Vector3 _input;
+    private Vector3 movement;
+    private Rigidbody playerRigidbody;
+
+    private void Awake()
+    {
+        playerRigidbody = GetComponent<Rigidbody>();
+
+    }
 
     private void Update()
     {
-        GatherInput();
-        Look();
-        Animate(_input.x, _input.z);
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        Move(horizontal, vertical);
+        Look(horizontal, vertical);
+
+        //GatherInput();
+        //Look();
+        //Animate(_input.x, _input.z);
 
         VerificationDistancePlayer();
     }
 
     private void FixedUpdate()
     {
-        Move();
+        //Move(HorizontalWrapMode, vertical);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -37,23 +50,29 @@ public class PlayerControllerGhostBlue : MonoBehaviour
 
     private void GatherInput()
     {
-        _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        //_input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
     }
 
-    private void Look()
+    private void Look(float h, float v)
     {
-        if (_input == Vector3.zero) return;
+        if (h != 0f || v != 0f)
+        {
+            Quaternion newRotation = Quaternion.LookRotation(movement);
+            playerRigidbody.MoveRotation(Quaternion.Slerp(playerRigidbody.rotation, newRotation, Time.deltaTime * _turnSpeed));
+        }
 
-        var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime);
+        //if (_input == Vector3.zero) return;
+
+        //var rot = Quaternion.LookRotation(_input.ToIso(), Vector3.up);
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, _turnSpeed * Time.deltaTime);
     }
 
-    private void Move()
+    private void Move(float h, float v)
     {
-        Vector3 movement = _input.normalized * _speed * Time.deltaTime;
-        _rb.MovePosition(transform.position + movement);
+        movement.Set(h, 0f, v);
+        movement = movement.normalized * _speed * Time.deltaTime;
 
-        //_rb.MovePosition(transform.position + transform.forward * _input.normalized.magnitude * _speed * Time.deltaTime);
+        playerRigidbody.MovePosition(transform.position + movement);
     }
 
     void Animate(float h, float v)

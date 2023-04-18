@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,19 +6,23 @@ using UnityEngine;
 public class CreateGhosts : MonoBehaviour
 {
     public GameObject playerPrefab;
-    public GameObject ghostPrefab;
+    public GameObject ghostBluePrefab;   
+
+    [SerializeField] private AudioSource useSkillSound;
+
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            CreateCopy();
+            useSkillSound.Play();
+            CreateBlueGhostCopy();
         }
     }
 
-    void CreateCopy()
+    void CreateBlueGhostCopy()
     {
-        if (playerPrefab == null || ghostPrefab == null)
+        if (playerPrefab == null || ghostBluePrefab == null)
         {
             Debug.LogWarning("Player or Ghost prefab is not assigned.");
             return;
@@ -30,7 +35,7 @@ public class CreateGhosts : MonoBehaviour
             return;
         }
 
-        GameObject copy = Instantiate(ghostPrefab, player.transform.position, player.transform.rotation);
+        GameObject copy = Instantiate(ghostBluePrefab, player.transform.position, player.transform.rotation);
         //copy.GetComponent<GhostController>().enabled = true;
         player.GetComponent<PlayerController>().enabled = false;
         player.GetComponent<CreateGhosts>().enabled = false;

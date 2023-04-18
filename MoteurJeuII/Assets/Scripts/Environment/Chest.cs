@@ -1,20 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
-{    
+{
+
     private bool isInRange = false;
     [SerializeField] private Animator animatorChest;
+    [SerializeField] private GameObject keyImage;
+    [SerializeField] private AudioSource getItem;
 
-   
+
 
     // Update is called once per frame
     void Update()
     {
         if (isInRange && Input.GetKeyDown(KeyCode.E)) // Check if the player is within range and presses the interact button (E key)
         {
+            getItem.Play();
             Debug.Log("Player Open Chest and get the Key");
+            GameManager.instance.playerHasTheKey = true;
+            keyImage.SetActive(true);
             animatorChest.SetTrigger("ChestOpen");            
         }
     }
@@ -34,7 +41,7 @@ public class Chest : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //Debug.Log("Player is not in range");
+            //Debug.Log("Player is not in range");            
             isInRange = false;
         }
     }

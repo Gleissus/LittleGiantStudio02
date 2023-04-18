@@ -7,12 +7,18 @@ public class Switch : MonoBehaviour
     [Header("Plataform GameObject")]
     [SerializeField] private Transform pointA;
     [SerializeField] private Transform pointB;
-    [SerializeField] private Transform platform;
+    [SerializeField] private Transform pointC;
+    [SerializeField] private Transform platformA;
+    [SerializeField] private Transform platformB;
+    [SerializeField] private Transform platformC;
     [Header("Plataform Variables")]
     [SerializeField] private float speedPlatform = 2f;
     [SerializeField] private bool switchOn = false;
-    [SerializeField] private Animator animatorSwitch;
-   
+    [Header("Crystal Variables")]
+    [SerializeField] private GameObject cristal1;
+    [SerializeField] private AudioSource crystalActiveSound;
+
+
     private bool isInRange = false;
 
 
@@ -22,13 +28,17 @@ public class Switch : MonoBehaviour
         if (isInRange && Input.GetKeyDown(KeyCode.E)) // Check if the player is within range and presses the interact button (E key)
         {
             Debug.Log("Player Active the Switch");
+            crystalActiveSound.Play();
+            cristal1.GetComponent<Light>().enabled = true;
             switchOn = true;
         }
 
         if (switchOn == true)
         {
-            platform.position = Vector3.Lerp(pointA.position, pointB.position, Mathf.PingPong(Time.time * speedPlatform, 1));            
-            animatorSwitch.SetTrigger("SwichtOn");
+            platformA.position = Vector3.MoveTowards(platformA.position, pointA.position, (Time.deltaTime * speedPlatform));            
+            platformB.position = Vector3.MoveTowards(platformB.position, pointB.position, (Time.deltaTime * speedPlatform));            
+            platformC.position = Vector3.MoveTowards(platformC.position, pointC.position, (Time.deltaTime * speedPlatform));            
+            
         }        
     }
 
@@ -37,7 +47,7 @@ public class Switch : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("PlayerGhostBlue"))
-        {
+        {            
             Debug.Log("Player is in range");
             isInRange = true;
         }

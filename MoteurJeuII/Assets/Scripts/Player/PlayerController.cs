@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private void GatherInput()
     {
         _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        
     }
 
     private void Look()
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
+        
         Vector3 movement = _input.normalized * _speed * Time.deltaTime;
         _rb.MovePosition(transform.position + movement);
 
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
     void Animate(float h, float v)
     {
+       
         bool walking = h != 0f || v != 0f;
         animator.SetBool("IsWalking", walking);
     }
